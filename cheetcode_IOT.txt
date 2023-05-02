@@ -1,0 +1,129 @@
+Aim: Interfacing of LED’s & DC motor with 8051 microcontroller. Blinking the LED
+ASM ORG 3000H
+3000 : MOV 90H, #0FFH // instruction to turn ON the LED: LCALL 3030H //Delay to keep LED ON
+: MOV 90H, #00 // instruction to turn OFF the LED: LCALL 3030H //Delay to keep LED OFF
+: LJMP 3000H //To repeat the program. ASM ORG 3030H
+3030 : MOV R0, #0FFH // Load register R0
+3032 : MOV R1, #0FFH // Load register R1
+3034 : DJNZ R1, 3034H //Decrement
+3036 : DJNZ R0, 3032H
+: RET
+Driving DC motor
+ASM ORG 3000H
+3000 : MOV 90, #01 // instruction to turn ON the motor in clockwise: LCALL 3030 //Delay to keep motor running in clockwise: MOV 90, #00 // instruction to turn STOP the Motor
+: LCALL 3030 //Delay to keep Motor in STOP Position
+: MOV 90, #02 // instruction to turn ON the motor in anticlockwise: LCALL 3030 //Delay to keep motor running in anticlockwise: MOV 90, #00 // instruction to turn STOP the Motor
+: LCALL 3030 //Delay to keep Motor in STOP Position
+: LJMP 3000 //To repeat the program. ASM ORG 3030
+3030 : MOV R0, #0FF // Load register R0
+3032 : MOV R1, #0FF // Load register R1
+3034 : MOV R2, #0FF // Load register R2
+3036 : DJNZ R2, 3036 //Decrement
+3038 : DJNZ R1, 3034
+303A : DJNZ R0, 3032
+303C : RET
+Aim: To develop a circuit for Blinking LED & Pulse Width Modulation(PWM) using Arduino. Blinking LED
+void setup() {
+pinMode(7,OUTPUT);
+}
+void loop() {
+digitalWrite(7,HIGH);
+delay(1000);
+digitalWrite(7,LOW);
+delay(1000);
+}
+PWM
+void setup() {
+pinMode(7,OUTPUT);
+}
+void loop() {
+analogWrite(6,255);
+delay(1000);
+analogWrite(6,191);
+delay(1000);
+analogWrite(6,127);
+delay(1000);
+analogWrite(6,64);
+delay(1000);
+analogWrite(6,0);
+delay(1000);
+}
+Aim: Develop a circuit to interface Arduino with TemperatureSensor
+DHT11
+#include <DHT.h>
+DHT dht(2,DHT11);
+int temp;
+int hum;
+void setup() {
+Serial.begin(9600);
+dht.begin();
+}
+void loop() {
+delay(2000);
+temp = dht.readTemperature();
+hum = dht.readHumidity();
+Serial.print("Temperature:");
+Serial.print(temp);
+Serial.println("oC"); //press Alt 167 for degree symbol
+Serial.print("Humidity:");
+Serial.print(hum);
+Serial.println("%");
+}
+Aim: Develop a circuit to interface Arduino with UltrasonicSensor
+Ultrasonic Sensor
+const int trigPin = 10;
+const int echoPin = 11;
+int travelTime;
+int distance;
+void setup() {
+pinMode(trigPin,OUTPUT);
+pinMode(echoPin,INPUT);
+Serial.begin(9600);
+}
+void loop() {
+digitalWrite(trigPin,LOW);
+delay(100);
+digitalWrite(trigPin,HIGH);
+delay(500);
+digitalWrite(trigPin,LOW);
+travelTime = pulseIn(echoPin,HIGH);
+distance = 0.034*travelTime/2;
+Serial.println(distance);
+}
+Aim: Develop a circuit to interface Arduino with PIRSensor
+PIR
+int pirsensor = 2;
+int readValue;
+void setup() {
+pinMode(pirsensor,INPUT);
+pinMode(13,OUTPUT);
+Serial.begin(9600);
+}
+void loop() {
+int readValue = digitalRead(pirsensor);
+if(readValue == 1)
+{
+digitalWrite(13,HIGH);
+}
+else
+{
+digitalWrite(13,LOW);
+}
+Serial.println(readValue);
+}
+Aim: Develop a circuit to interface Arduino with Actuator(12VSolenoid Valve OR 12 V DC Motor). Actuator
+int IRPin = 2;
+int valvePin = 13;
+void setup() {
+pinMode(IRPin, INPUT);
+pinMode(valvePin, OUTPUT);
+}
+void loop() {
+if(digitalRead(IRPin)== LOW)
+{
+digitalWrite(valvePin,HIGH);
+}
+else{
+digitalWrite(valvePin,LOW);
+}
+}
